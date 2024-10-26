@@ -1,26 +1,33 @@
-name: MRFG
+name: Node.js CI
 
 on:
-  schedule:
-cron: '0 */5 * * *'  # Every 5 hours
   push:
     branches:
-main  # Main branch
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
     steps:
-name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20'  # Use the Node.js 20
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
 
-name: Install dependencies
-        run: npm install
+    - name: Install dependencies
+      run: npm install
 
-name: start
-        run: npm start # Start Bot
+    - name: Start application
+      run: npm start
